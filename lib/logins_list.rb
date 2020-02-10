@@ -1,0 +1,62 @@
+require 'rest-client'
+require 'json'
+require 'pry'
+
+class LoginsList
+  def perform(user_id)
+    user = User.find(user_id)
+    return_url = success_path
+    create(user, return_url)
+  end
+
+  def create(user, return_url)
+    token = API.request(:post, 'https://www.saltedge.com/api/v4/tokens/create/',
+        'data' =>
+        {
+          'customer_id'  => user.customer_id,
+          'return_to'    => return_url,
+          'fetch_scopes' => %w[accounts transactions]
+        }
+    )
+
+    connect_url = JSON.parse(token.body)['data']['connect_url']
+  end
+
+  def save(user_id)
+    user_logins = list_logins(user_id)
+    login = Login.new(
+      user_id:      user_id,
+      login_id:     user_logins['data'].last['id'],
+      country_code: user_logins['data'].last['country_code'],
+      created_time: user_logins['data'].last['created_at'],
+      status:       user_logins['data'].last['status']
+    )
+
+    login.save
+  end
+
+  def list_logins(user_id)
+    user = User.find(user_id)
+    user_logins = API.request(:get, 'https://www.saltedge.com/api/v4/logins/', { 'data' => {'customer_id' => user.customer_id } })
+    JSON.parse user_logins.body
+  end
+
+  def reconnect(login_id, credentials)
+    API.request(:put, "https://www.saltedge.com/api/v4/logins/#{login_id}/reconnect",
+      {
+        'data' =>
+        {
+          'credentials'          => credentials,
+          'override_credentials' => 'true'
+        }
+      })
+  end
+
+  def refresh(login_id)
+    API.request(:put, "https://www.saltedge.com/api/v4/logins/#{login_id}/refresh")
+  end
+
+  def remove(login_id)
+    API.request(:delete, "https://www.saltedge.com/api/v4/logins/#{login_id}")
+  end
+end
