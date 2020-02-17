@@ -9,7 +9,7 @@ class CreateCustomer
   end
 
   def create_customer
-    response    = API.request(:post, 'https://www.saltedge.com/api/v4/customers/', 'data' => { 'identifier' => @user.email })
+    response    = API.request(:post, 'https://www.saltedge.com/api/v5/customers/', 'data' => { 'identifier' => @user.email })
     customer_id = JSON.parse(response)['data']['id']
 
     @user.customer_id = customer_id

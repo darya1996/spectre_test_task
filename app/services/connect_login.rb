@@ -5,22 +5,28 @@ require 'pry'
 class ConnectLogin
   def perform(params)
     @user       = User.find(params)
-    @return_url = "https://secure-headland-50598.herokuapp.com/success"
+    @return_url = "http://localhost:3000/success"
 
     connect
   end
 
   def connect
-    token = API.request(:post, 'https://www.saltedge.com/api/v4/tokens/create/',
+    API.request(:post, 'https://www.saltedge.com/api/v5/connect_sessions/create',
       'data' =>
         {
           'customer_id'  => "#{@user.customer_id}",
-          'return_to'    => @return_url,
-          'fetch_scopes' => %w[accounts transactions]
+          'consent'      => consent_params,
+          'attempt'      => {
+            'return_to' => @return_url
+          }
         }
     )
+  end
 
-    token_body  = JSON.parse(token.body)
-    token_body['data']['connect_url']
+  def consent_params
+    {
+      'scopes'    => %w[account_details transactions_details],
+      'from_date' => '2020-01-01'
+    }
   end
 end

@@ -8,13 +8,7 @@ class FetchAccounts
     login = Login.find_by(login_id: login_id)
 
     login.accounts.destroy_all if login.accounts.any?
-    response = API.request(:get, 'https://www.saltedge.com/api/v4/accounts',
-      'data' =>
-        {
-          'login_id'    => login_id,
-          'customer_id' => login.user.customer_id
-        }
-    )
+    response = API.request(:get, "https://www.saltedge.com/api/v5/accounts?connection_id=#{login_id}&customer_id=#{login.user.customer_id}")
 
     accounts = JSON.parse response.body
     accounts = accounts['data']
@@ -32,9 +26,9 @@ class FetchAccounts
         nature:             account['nature'],
         transactions_count: transactions_posted + transactions_pending
       )
-
       acc.save
-      Lists::TransactionsLists.new.fetch(acc.id)
+
+      Lists::TransactionsLists.new.fetch(acc.id, login.login_id)
     end
   end
 end

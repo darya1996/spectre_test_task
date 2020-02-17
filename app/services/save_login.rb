@@ -4,7 +4,7 @@ require 'pry'
 
 class SaveLogin
   def perform(user_id)
-    @user = User.find(user_id)
+    @user       = User.find(user_id)
     user_logins = list_logins(@user.id)
 
     login = Login.new(
@@ -15,14 +15,13 @@ class SaveLogin
       status:     user_logins['data'].last['status'],
       provider:   user_logins['data'].last['provider_name']
     )
-
     login.save
 
     FetchAccounts.new.fetch(login.login_id)
   end
 
   def list_logins(user_id)
-    user_logins = API.request(:get, 'https://www.saltedge.com/api/v4/logins/', 'data' => { 'customer_id' => @user.customer_id })
+    user_logins = API.request(:get, 'https://www.saltedge.com/api/v5/connections/', 'data' => { 'customer_id' => @user.customer_id })
     JSON.parse user_logins.body
   end
 end

@@ -4,11 +4,11 @@ require 'pry'
 
 module Lists
   class TransactionsLists
-    def fetch(account_id)
+    def fetch(account_id, connection_id)
       account  = Account.find(account_id)
-      response = API.request(:get, "https://www.saltedge.com/api/v4/transactions?account_id=#{account.account_id}")
-
+      response = API.request(:get, "https://www.saltedge.com/api/v5/transactions?connection_id=#{connection_id}&account_id=#{account.account_id}")
       transactions = JSON.parse response.body
+
       transactions = transactions['data']
 
       transactions.each do |transaction|

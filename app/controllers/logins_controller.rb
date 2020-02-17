@@ -14,8 +14,16 @@ class LoginsController < ApplicationController
   end
 
   def create_login
-    connect_url = ConnectLogin.new.perform(current_user.id)
+    token = ConnectLogin.new.perform(current_user.id)
+
+    token_body  = JSON.parse(token.body)
+    connect_url = token_body['data']['connect_url']
+
+    flash.notice = 'Login successfully created'
     redirect_to connect_url
+  rescue => error
+    flash.alert = token["error"]["message"]
+    redirect_to logins_path
   end
 
   def callback_success
@@ -28,20 +36,28 @@ class LoginsController < ApplicationController
   end
 
   def reconnect_login
-    credentials = {
-      'login'    => params[:login],
-      'password' => params[:password]
-    }
-    ReconnectLogin.new.perform(params[:login_id], credentials)
+    token = ReconnectLogin.new.perform(params[:login_id])
+
+    token_body  = JSON.parse(token.body)
+    connect_url = token_body['data']['connect_url']
 
     flash.notice = 'Login successfully reconnected'
+    redirect_to connect_url
+  rescue => error
+    flash.alert = token["error"]["message"]
     redirect_to logins_path
   end
 
   def refresh_login
-    RefreshLogin.new.perform(params[:login_id])
+    token = RefreshLogin.new.perform(params[:login_id])
+
+    token_body   = JSON.parse(token.body)
+    connect_url  = token_body['data']['connect_url']
 
     flash.notice = 'Login successfully refreshed'
+    redirect_to connect_url
+  rescue => error
+    flash.alert = token["error"]["message"]
     redirect_to logins_path
   end
 
