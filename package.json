@@ -1,5 +1,9 @@
 {
   "name": "spectre_test_task",
   "private": true,
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^4.41.6",
+    "webpack-dev-server": "^3.10.3"
+  }
 }
