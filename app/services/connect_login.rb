@@ -5,7 +5,7 @@ require 'pry'
 class ConnectLogin
   def perform(params)
     @user       = User.find(params)
-    @return_url = "http://localhost:3000/success"
+    @return_url = "https://obscure-sierra-02650.herokuapp.com/success"
 
     connect
   end
