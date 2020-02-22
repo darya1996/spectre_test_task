@@ -1,6 +1,6 @@
 # README
 
-`https://secure-headland-50598.herokuapp.com`
+`https://obscure-sierra-02650.herokuapp.com/`
 
 ##Installation
 1. Execute bundle
