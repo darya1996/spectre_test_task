@@ -53,8 +53,8 @@ class LoginsController < ApplicationController
 
     token_body   = JSON.parse(token.body)
     connect_url  = token_body['data']['connect_url']
-
     flash.notice = 'Login successfully refreshed'
+
     redirect_to connect_url
   rescue => error
     flash.alert = token["error"]["message"]
