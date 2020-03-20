@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_09_112357) do
+ActiveRecord::Schema.define(version: 2020_03_18_202056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
-    t.integer "account_id"
+    t.bigint "account_id"
     t.string "name"
     t.float "balance"
     t.string "currency"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 2020_02_09_112357) do
   end
 
   create_table "logins", force: :cascade do |t|
-    t.integer "login_id"
+    t.bigint "login_id"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 2020_02_09_112357) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "customer_id"
+    t.bigint "customer_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
