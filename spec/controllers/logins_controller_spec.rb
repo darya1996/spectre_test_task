@@ -99,7 +99,7 @@ RSpec.describe LoginsController, type: :controller do
   #           "currency_code": "EUR"
   #         }
   #       ]
-  #     }.with_indifferent_access
+  #     }
 
   #     expect(LoginsList)
   #       .to receive(:list_logins).once
