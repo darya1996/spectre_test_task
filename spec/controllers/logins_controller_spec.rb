@@ -36,7 +36,7 @@ RSpec.describe LoginsController, type: :controller do
         .to receive(:perform).once
         .and_return(connect_response)
 
-      post :create_login, params: { connection_id: login.login_id }
+      post :create_login, params: { login_id: login.login_id }
 
       expect(response).to redirect_to(url)
     end
@@ -55,7 +55,7 @@ RSpec.describe LoginsController, type: :controller do
         .to receive(:perform).once
         .and_return(refresh_response)
 
-      post :refresh_login, params: { connection_id: login.login_id }
+      post :refresh_login, params: { login_id: login.login_id }
 
       expect(response).to redirect_to(url)
     end
@@ -74,7 +74,7 @@ RSpec.describe LoginsController, type: :controller do
         .to receive(:perform).once
         .and_return(reconnect_response)
 
-      post :reconnect_login, params: { connection_id: login.login_id }
+      post :reconnect_login, params: { login_id: login.login_id }
 
       expect(response).to redirect_to(url)
     end
