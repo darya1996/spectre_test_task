@@ -30,7 +30,7 @@ RSpec.describe LoginsController, type: :controller do
         "data": {
           "connect_url": url
         }
-      }.with_indifferent_access
+      }
 
       expect(ConnectLogin)
         .to receive(:perform).once
@@ -49,7 +49,7 @@ RSpec.describe LoginsController, type: :controller do
         "data": {
           "connect_url": url
         }
-      }.with_indifferent_access
+      }
 
       expect(RefreshLogin)
         .to receive(:perform).once
@@ -68,7 +68,7 @@ RSpec.describe LoginsController, type: :controller do
         "data": {
           "connect_url": url
         }
-      }.with_indifferent_access
+      }
 
       expect(ReconnectLogin)
         .to receive(:perform).once
