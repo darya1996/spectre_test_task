@@ -19,7 +19,7 @@ RSpec.describe LoginsController, type: :controller do
     )
   }
 
-  before :each do
+  before do
     sign_in user
   end
 
@@ -27,8 +27,8 @@ RSpec.describe LoginsController, type: :controller do
     it "create a login" do
       url = "http://example.com"
       connect_response = {
-        "data": {
-          "connect_url": url
+        "data" => {
+          "connect_url" => url
         }
       }
 
@@ -46,8 +46,8 @@ RSpec.describe LoginsController, type: :controller do
     it "refreshes a login" do
       url = "http://example.com"
       refresh_response = {
-        "data": {
-          "connect_url": url
+        "data" => {
+          "connect_url" => url
         }
       }
 
@@ -65,8 +65,8 @@ RSpec.describe LoginsController, type: :controller do
     it "reconnect a login" do
       url = "http://example.com"
       reconnect_response = {
-        "data": {
-          "connect_url": url
+        "data" => {
+          "connect_url" => url
         }
       }
 
@@ -83,29 +83,46 @@ RSpec.describe LoginsController, type: :controller do
   # describe "#fetch_logins" do
   #   it "fetch the logins" do
   #     account_response = {
-  #       "data": [
+  #       "data"=> [
   #         {
-  #           "id":            1,
-  #           "name":          "First account",
-  #           "nature":        "account",
-  #           "balance":       "121",
-  #           "currency_code": "EUR"
+  #           "id" =>            1,
+  #           "name" =>          "First account",
+  #           "nature" =>        "account",
+  #           "balance" =>       "121",
+  #           "currency_code" => "EUR"
   #         },
   #         {
-  #           "id":            2,
-  #           "name":          "Second account",
-  #           "nature":        "credit_card",
-  #           "balance":       "-121",
-  #           "currency_code": "EUR"
+  #           "id" =>            2,
+  #           "name" =>          "Second account",
+  #           "nature" =>        "credit_card",
+  #           "balance" =>       "-121",
+  #           "currency_code" => "EUR"
   #         }
   #       ]
   #     }
+
+  #     acc = {:json=>
+  #        {"data"=>
+  #          [{"balance"=>"121",
+  #            "currency_code"=>"EUR",
+  #            "id"=>1,
+  #            "name"=>"First account",
+  #            "nature"=>"account"},
+  #           {"balance"=>"-121",
+  #            "currency_code"=>"EUR",
+  #            "id"=>2,
+  #            "name"=>"Second account",
+  #            "nature"=>"credit_card"}]}}
 
   #     expect(LoginsList)
   #       .to receive(:list_logins).once
   #       .and_return(account_response)
 
-  #     # controller.send(:list).to eq([])
+  #     controller.should_receive(:render).with(acc).and_return(true)
+
+  #     expect {
+  #       controller.send(:list)
+  #     }.to change { login.accounts.count }.by (+2)
   #   end
   # end
 end
