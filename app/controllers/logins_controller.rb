@@ -23,7 +23,7 @@ class LoginsController < ApplicationController
     flash.notice = 'Login successfully created'
     redirect_to connect_url
   rescue => error
-    flash.alert = token_body['error']['message']
+    flash.alert = response['error']['message']
     redirect_to logins_path
   end
 
@@ -100,7 +100,7 @@ class LoginsController < ApplicationController
     flash.notice = 'Login successfully reconnected'
     redirect_to connect_url
   rescue => error
-    flash.alert = token_body['error']['message']
+    flash.alert = response['error']['message']
     redirect_to logins_path
   end
 
@@ -111,7 +111,7 @@ class LoginsController < ApplicationController
     flash.notice = 'Login successfully refreshed'
     redirect_to connect_url
   rescue => error
-    flash.alert = token_body['error']['message']
+    flash.alert = response['error']['message']
     redirect_to logins_path
   end
 
