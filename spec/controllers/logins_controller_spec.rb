@@ -7,19 +7,37 @@ RSpec.describe LoginsController, type: :controller do
       user_id:  1,
       status:   "Active",
       country:  "XF",
-      provider: "Fake Bank Simple"
+      provider: "Fake Bank Simple",
+      accounts: [account]
     )
   }
 
   let(:user) {
     User.create(
+      id:          1,
       customer_id: 1,
       email:       'test@test.com',
-      password:    "password"
+      password:    "password",
+      logins:      [login]
     )
   }
 
-  before do
+  let(:transaction) {
+    Transaction.new(
+      id:         1,
+      account_id: 1
+    )
+  }
+
+  let(:account) {
+    Account.new(
+      id:            1,
+      login_id:      1,
+      transactions:  [transaction]
+    )
+  }
+
+  before :each do
     sign_in user
   end
 
@@ -30,13 +48,13 @@ RSpec.describe LoginsController, type: :controller do
         "data" => {
           "connect_url" => url
         }
-      }
+      }.with_indifferent_access
 
-      expect(ConnectLogin)
-        .to receive(:perform).once
+      expect(Connector)
+        .to receive(:connect_login).once
         .and_return(connect_response)
 
-      post :create_login, params: { login_id: login.login_id }
+      post :create_login
 
       expect(response).to redirect_to(url)
     end
@@ -49,10 +67,10 @@ RSpec.describe LoginsController, type: :controller do
         "data" => {
           "connect_url" => url
         }
-      }
+      }.with_indifferent_access
 
-      expect(RefreshLogin)
-        .to receive(:perform).once
+      expect(Connector)
+        .to receive(:refresh_login).once
         .and_return(refresh_response)
 
       post :refresh_login, params: { login_id: login.login_id }
@@ -70,9 +88,8 @@ RSpec.describe LoginsController, type: :controller do
         }
       }
 
-      expect(ReconnectLogin)
-        .to receive(:perform).once
-        .and_return(reconnect_response)
+      expect(Connector)
+        .to receive(:reconnect_login).once.and_return(reconnect_response)
 
       post :reconnect_login, params: { login_id: login.login_id }
 
@@ -82,46 +99,65 @@ RSpec.describe LoginsController, type: :controller do
 
   # describe "#fetch_logins" do
   #   it "fetch the logins" do
-  #     account_response = {
+  #     account1 = {
   #       "data"=> [
   #         {
-  #           "id" =>            1,
-  #           "name" =>          "First account",
-  #           "nature" =>        "account",
-  #           "balance" =>       "121",
-  #           "currency_code" => "EUR"
-  #         },
-  #         {
-  #           "id" =>            2,
-  #           "name" =>          "Second account",
-  #           "nature" =>        "credit_card",
-  #           "balance" =>       "-121",
-  #           "currency_code" => "EUR"
+  #           "id"            => 1,
+  #           "name"          => "First account",
+  #           "nature"        => "account",
+  #           "balance"       => "121",
+  #           "currency_code" => "EUR",
+  #           "extra"         => {
+  #             "transactions_count" => {
+  #               "posted" => 2,
+  #               "pending" => 0
+  #             }
+  #           }
   #         }
   #       ]
   #     }
 
-  #     acc = {:json=>
-  #        {"data"=>
-  #          [{"balance"=>"121",
-  #            "currency_code"=>"EUR",
-  #            "id"=>1,
-  #            "name"=>"First account",
-  #            "nature"=>"account"},
-  #           {"balance"=>"-121",
-  #            "currency_code"=>"EUR",
-  #            "id"=>2,
-  #            "name"=>"Second account",
-  #            "nature"=>"credit_card"}]}}
+  #     transaction1 = {
+  #       "data" => [
+  #         {
+  #           "id"            => 1,
+  #           "description"   => "transaction",
+  #           "status"        => "booked",
+  #           "amount"        => "5",
+  #           "currency_code" => "USD",
+  #           "made_on"       => "2019-10-10"
+  #         }
+  #       ]
+  #     }
 
-  #     expect(LoginsList)
-  #       .to receive(:list_logins).once
-  #       .and_return(account_response)
+  #     transaction2 = {
+  #       "data" => [
+  #         {
+  #           "id"            => 2,
+  #           "description"   => "card transaction",
+  #           "status"        => "booked",
+  #           "amount"        => "10",
+  #           "currency_code" => "USD",
+  #           "made_on"       => "2019-10-9"
+  #         }
+  #       ]
+  #     }
 
-  #     controller.should_receive(:render).with(acc).and_return(true)
+  #     expect(Connector)
+  #       .to receive(:fetch_accounts).once.and_return(account1)
+
+  #     expect(Connector)
+  #       .to receive(:fetch_transactions)
+  #       .with(login.login_id, account_response["data"].first["id"])
+  #       .and_return(transaction1)
+
+  #     expect(Connector)
+  #       .to receive(:fetch_transactions)
+  #       .with(login.login_id, account_response["data"].first["id"])
+  #       .and_return(transaction2)
 
   #     expect {
-  #       controller.send(:list)
+  #       controller.send(:fetch_all_accounts, login, login.login_id)
   #     }.to change { login.accounts.count }.by (+2)
   #   end
   # end

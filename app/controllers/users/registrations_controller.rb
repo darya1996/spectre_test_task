@@ -5,8 +5,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     super
-    user = params[:user]["email"]
-
-    CreateCustomer.new.perform(user)
+    email = params[:user]["email"]
+    user = User.find_by(email: email)
+binding.pry
+    response = Connector.create_customer(email)
+    customer_id = response.dig("data", "id")
+    user.customer_id = customer_id
+    user.save
   end
 end
