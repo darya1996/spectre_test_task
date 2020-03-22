@@ -7,9 +7,9 @@
 
     `$ bundle install`
 
-2. Copy .env.dist and set the environment variables (APP_ID, SECRET, PRIVATE_PEM_PATH)
+2. Copy application.example.yml and set the environment variables (APP_ID, SECRET)
 
-    `$ cp .env.dist .env`
+    `$ cp /config/application.example.yml /config/application.yml`
 
 3. Create/migrate the db
 
