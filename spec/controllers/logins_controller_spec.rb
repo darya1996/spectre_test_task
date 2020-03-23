@@ -77,6 +77,30 @@ RSpec.describe LoginsController, type: :controller do
 
       expect(response).to redirect_to(url)
     end
+
+    it "handles error" do
+      url       = "http://example.com"
+      login_url = "http://example.com/logins"
+
+      refresh_response = {
+        "error": {
+          "message": "Connection cannot be refreshed"
+        },
+        "next_refresh_possible_at": "2020-03-23 15:19:38"
+      }
+
+      error = RestClient::NotAcceptable.new(
+        RestClient::Exception.new(double( body: refresh_response.to_json, http_headers: { location: url } ))
+      )
+
+      expect(Connector)
+        .to receive(:refresh_login).once
+        .and_raise(error)
+
+      post :refresh_login, params: { login_id: login.login_id }
+
+      expect(response).to redirect_to(login_url)
+    end
   end
 
   describe "#reconnect_login" do
@@ -148,12 +172,12 @@ RSpec.describe LoginsController, type: :controller do
 
   #     expect(Connector)
   #       .to receive(:fetch_transactions)
-  #       .with(login.login_id, account_response["data"].first["id"])
+  #       .with(login.login_id, account1["data"].first["id"])
   #       .and_return(transaction1)
 
   #     expect(Connector)
   #       .to receive(:fetch_transactions)
-  #       .with(login.login_id, account_response["data"].first["id"])
+  #       .with(login.login_id, account1["data"].first["id"])
   #       .and_return(transaction2)
 
   #     expect {
