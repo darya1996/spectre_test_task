@@ -7,7 +7,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super
     email = params[:user]["email"]
     user = User.find_by(email: email)
-binding.pry
+
     response = Connector.create_customer(email)
     customer_id = response.dig("data", "id")
     user.customer_id = customer_id
