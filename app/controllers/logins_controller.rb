@@ -23,6 +23,7 @@ class LoginsController < ApplicationController
     flash.notice = 'Login successfully created'
     redirect_to connect_url
   rescue => error
+    response = JSON.parse(error.response.body)
     flash.alert = response['error']['message']
     redirect_to logins_path
   end
@@ -37,12 +38,13 @@ class LoginsController < ApplicationController
     user_logins = Connector.list_logins(@user.customer_id)
 
     login = Login.new(
-      user_id:    @user.id,
-      login_id:   user_logins['data'].last['id'],
-      country:    user_logins['data'].last['country_code'],
-      created_at: user_logins['data'].last['created_at'],
-      status:     user_logins['data'].last['status'],
-      provider:   user_logins['data'].last['provider_name']
+      user_id:                  @user.id,
+      login_id:                 user_logins['data'].last['id'],
+      country:                  user_logins['data'].last['country_code'],
+      created_at:               user_logins['data'].last['created_at'],
+      status:                   user_logins['data'].last['status'],
+      provider:                 user_logins['data'].last['provider_name'],
+      next_refresh_possible_at: user_logins['data'].last['next_refresh_possible_at']
     )
     login.save
 
@@ -100,6 +102,7 @@ class LoginsController < ApplicationController
     flash.notice = 'Login successfully reconnected'
     redirect_to connect_url
   rescue => error
+    response = JSON.parse(error.response.body)
     flash.alert = response['error']['message']
     redirect_to logins_path
   end
@@ -111,6 +114,7 @@ class LoginsController < ApplicationController
     flash.notice = 'Login successfully refreshed'
     redirect_to connect_url
   rescue => error
+    response = JSON.parse(error.response.body)
     flash.alert = response['error']['message']
     redirect_to logins_path
   end

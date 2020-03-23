@@ -13,7 +13,7 @@ class Connector
 
   def self.connect_login(params)
     user       = User.find(params)
-    return_url = 'http://localhost:3000/success'
+    return_url = 'https://obscure-sierra-02650.herokuapp.com/success'
 
     post(
       '/connect_sessions/create',
@@ -47,7 +47,7 @@ class Connector
   end
 
   def self.reconnect_login(login_id)
-    return_url = 'http://localhost:3000/success'
+    return_url = 'https://obscure-sierra-02650.herokuapp.com/success'
 
     post(
       '/connect_sessions/reconnect',

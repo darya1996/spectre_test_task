@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_18_202056) do
+ActiveRecord::Schema.define(version: 2020_03_23_103540) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2020_03_18_202056) do
     t.string "status"
     t.string "country"
     t.string "provider"
+    t.datetime "next_refresh_possible_at"
     t.index ["user_id"], name: "index_logins_on_user_id"
   end
 
