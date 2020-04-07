@@ -5,9 +5,10 @@ RSpec.describe Connector do
 
   let(:response) { { code: 200, headers: {}, body: "{}" } }
   let(:options) { { url: "example.com", payload: {} } }
+  let(:error) { { code: 400 } }
 
   describe ".get" do
-    it "calls .request method with GET" do
+    it "calls request method with GET" do
       expect(described_class)
         .to receive(:request)
         .with(hash_including(method: :get, url: url))
@@ -15,10 +16,28 @@ RSpec.describe Connector do
 
       expect(described_class.get(url, options)).to eq(response)
     end
+
+    it "handles error" do
+      response = {
+        "error": {
+          "message": "Connection cannot be refreshed"
+        }
+      }
+
+      http_headers = { location: "example" }
+      error        = RestClient::Exception.new( body: response.to_json, http_headers: { location: url } )
+
+      expect(described_class)
+        .to receive(:request)
+        .with(hash_including(method: :get, url: url))
+        .and_raise(error)
+
+      expect(described_class.get(url, options)).to raise_error
+    end
   end
 
   describe ".post" do
-    it "calls .request method with POST" do
+    it "calls request method with POST" do
       expect(described_class)
         .to receive(:request)
         .with(hash_including(method: :post, url: url))
@@ -29,7 +48,7 @@ RSpec.describe Connector do
   end
 
   describe ".put" do
-    it "calls .request method with PUT" do
+    it "calls request method with PUT" do
       expect(described_class)
         .to receive(:request)
         .with(hash_including(method: :put, url: url))
@@ -40,7 +59,7 @@ RSpec.describe Connector do
   end
 
   describe ".delete" do
-    it "calls .request method with DELETE" do
+    it "calls request method with DELETE" do
       expect(described_class)
         .to receive(:request)
         .with(hash_including(method: :delete, url: url))

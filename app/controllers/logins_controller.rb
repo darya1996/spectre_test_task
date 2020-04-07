@@ -46,7 +46,7 @@ class LoginsController < ApplicationController
       provider:                 user_logins['data'].last['provider_name'],
       next_refresh_possible_at: user_logins['data'].last['next_refresh_possible_at']
     )
-    login.save
+    login.save!
 
     fetch_all_accounts(login, user_logins['data'].last['id'])
   end
@@ -70,7 +70,8 @@ class LoginsController < ApplicationController
         nature:             account['nature'],
         transactions_count: transactions_posted + transactions_pending
       )
-      acc.save
+
+      acc.save!
 
       fetch_transactions(acc.id, acc.account_id, login.login_id)
     end
@@ -91,7 +92,8 @@ class LoginsController < ApplicationController
         category:       transaction['category'],
         account_id:     acc_id
       )
-      trans.save
+
+      trans.save!
     end
   end
 

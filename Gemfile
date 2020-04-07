@@ -22,6 +22,9 @@ gem 'orm_adapter', '~> 0.5.0'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'populator'
+  gem 'sprockets-derailleur'
+  gem 'faker'
 end
 
 group :development do
@@ -41,6 +44,7 @@ group :test do
   gem 'chromedriver-helper'
   gem 'webmock'
   gem 'database_cleaner'
+  gem 'factory_bot_rails'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
