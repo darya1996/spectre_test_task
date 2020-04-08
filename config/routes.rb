@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     delete 'remove_login', to: 'logins#remove_login', as: 'remove_login'
     put 'reconnect_login', to: 'logins#reconnect_login', as: 'reconnect_login'
     put 'refresh_login', to: 'logins#refresh_login', as: 'refresh_login'
+    get 'fetch', to: 'accounts#fetch', as: 'fetch'
   end
   root to: "pages#index"
 end

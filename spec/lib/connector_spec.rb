@@ -5,7 +5,6 @@ RSpec.describe Connector do
 
   let(:response) { { code: 200, headers: {}, body: "{}" } }
   let(:options) { { url: "example.com", payload: {} } }
-  let(:error) { { code: 400 } }
 
   describe ".get" do
     it "calls request method with GET" do

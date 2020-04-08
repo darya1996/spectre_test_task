@@ -94,8 +94,7 @@ RSpec.describe LoginsController, type: :controller do
       refresh_response = {
         "error": {
           "message": "Connection cannot be refreshed"
-        },
-        "next_refresh_possible_at": "2020-03-23 15:19:38"
+        }
       }
 
       error = RestClient::NotAcceptable.new(
@@ -124,29 +123,6 @@ RSpec.describe LoginsController, type: :controller do
       expect(Connector)
         .to receive(:reconnect_login).once.and_return(reconnect_response)
 
-      post :reconnect_login, params: { login_id: login.login_id }
-
-      expect(response).to redirect_to(url)
-    end
-
-    it "reconnect a login" do
-      url = "http://example.com"
-
-      response = {
-        "error": {
-          "message": "Connection cannot be refreshed"
-        },
-        "next_refresh_possible_at": "2020-04-08 15:04:36"
-      }.with_indifferent_access
-
-      http_headers = { location: "foobar" }
-      error        = SaltEdgeConnector::ConnectionCannotBeRefreshed.new(
-        RestClient::Exception.new(double( body: refresh_response.to_json, http_headers: { location: url } ))
-      )
-
-      expect(Connector)
-        .to receive(:reconnect_login).once.and_return(RestClient::ResourceNotFound)
-binding.pry
       post :reconnect_login, params: { login_id: login.login_id }
 
       expect(response).to redirect_to(url)
@@ -200,7 +176,9 @@ binding.pry
       }
 
       expect(Connector)
-        .to receive(:fetch_accounts).once.and_return(account1)
+        .to receive(:fetch_accounts)
+        .with(login.login_id)
+        .and_return(account1)
 
       expect(Connector)
         .to receive(:fetch_transactions)
