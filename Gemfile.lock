@@ -303,7 +303,7 @@ DEPENDENCIES
   pg (>= 0.18, < 2.0)
   populator
   pry (~> 0.11.3)
-  puma (~> 3.11)
+  puma (~> 4.3)
   rails (~> 5.2.4, >= 5.2.4.1)
   rest-client (~> 2.0, >= 2.0.2)
   rspec
